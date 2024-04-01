@@ -1,0 +1,66 @@
+.container-style{
+    background-color: aliceblue;
+}
+.user-image{
+    width: 50px;
+    height:50px ;
+    display: inline;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.bg-color-h1{
+    color:white;
+}
+#chat-container{
+    background-color: #D0D4D9;
+    width: 100%;
+    height: 900px;
+    overflow-y: scroll;
+    margin: 0 auto;
+    padding:10px;
+}
+ .chat-section{
+    display: none;
+}
+
+.offline-status{
+    color:red;
+}
+.online-status{
+    color:green;
+}
+
+.current-user-chat {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.current-user-chat h4 {
+    float: right;
+    width: 50%;
+    height: 65px;
+    font-size: 24px;
+    border-radius: 12px 12px 12px 0px;
+    background-color: 	#A9A9A9;
+    margin: 0;
+
+    padding: 10px;
+}
+
+.distance-user-chat {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.distance-user-chat h4 {
+    display: inline-block;
+    font-size: 24px;
+    width: 50%;
+    height: 65px;
+    border-radius: 12px 12px 0 12px;
+    background-color: #578FEC;
+    margin: 0;
+    padding: 10px;
+}

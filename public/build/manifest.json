@@ -1,0 +1,28 @@
+{
+  "public/js/custom.js": {
+    "file": "assets/custom-DAKm3Lr6.js",
+    "name": "custom",
+    "src": "public/js/custom.js",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BmyrRlgd.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-JzEL9c1d.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "resources/js/bootstrap.js"
+    ]
+  },
+  "resources/js/bootstrap.js": {
+    "file": "assets/bootstrap-D_dSoEdD.js",
+    "name": "bootstrap",
+    "src": "resources/js/bootstrap.js",
+    "isEntry": true
+  }
+}
