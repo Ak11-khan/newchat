@@ -21,6 +21,12 @@
                         {{ __('Groups') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
+                    <x-nav-link :href="route('message')" :active="request()->routeIs('message')" class="text-gray-800 dark:text-gray-800">
+                        {{ __('Message') }}
+                    </x-nav-link>
+                </div>
+
 
 
 
@@ -35,6 +41,7 @@
                             class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-800 transition duration-150 ease-in-out bg-white border border-transparent rounded-md dark:text-gray-800 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-700 focus:outline-none">
                             <div>{{ Auth::user()->name }}</div>
 
+
                             <div class="ms-1">
                                 <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20">
@@ -47,6 +54,10 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link class="text-gray-800 dark:text-gray-800">
+                            <div>{{ Auth::user()->email }}</div>
+                        </x-dropdown-link>
+
                         <x-dropdown-link :href="route('profile.edit')" class="text-gray-800 dark:text-gray-800">
                             {{ __('Profile') }}
                         </x-dropdown-link>
@@ -89,11 +100,11 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
-        {{-- <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('search')">
-                {{ __('chat') }}
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('groups')" :active="request()->routeIs('groups')">
+                {{ __('Groups') }}
             </x-responsive-nav-link>
-        </div> --}}
+        </div>
 
 
 

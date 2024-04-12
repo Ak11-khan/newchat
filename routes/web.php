@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\JobController;
@@ -42,3 +43,8 @@ Route::get('/search', [UserController::class, 'searchUsers']);
 
 Route::get('/groups',[UserController::class,'loadGroups'])->middleware(['auth'])->name('groups');
 Route::post('/create-group', [UserController::class, 'createGroup'])->middleware(['auth'])->name('create.group');
+
+
+// message route
+
+Route::get('/message',[EmployeeController::class,'loadMessages'])->middleware(['auth'])->name('message');
