@@ -2,10 +2,17 @@
     <div class="container mt-4 container-style">
         <div class="row">
 
+
             @if (count($users) > 0)
 
                 <div class="col-md-3">
                     <ul class="list-group">
+                        <form id="searchForm">
+                            <input type="text" id="searchInput" placeholder="Search users...">
+                            {{-- <button type="submit">Search</button> --}}
+                        </form>
+
+
                         @foreach ($users as $user)
                             @php
                                 if ($user->image != '' && $user->image != null) {
@@ -42,7 +49,7 @@
                 </div>
             @else
                 <div class="col-md-12">
-                    <h6>Users not found! </h6>
+                    <h6>Users not found!? </h6>
                 </div>
             @endif
         </div>

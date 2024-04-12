@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard',[UserController::class,'loadDashboard'])->middleware(['auth'])->name('dashboard');
 
+
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -31,3 +35,10 @@ require __DIR__.'/auth.php';
 
 Route::post('/save-chat',[UserController::class, 'saveChat']);
 Route::post('/load-Chats',[UserController::class, 'loadChats']);
+Route::get('/search', [UserController::class, 'searchUsers']);
+
+
+// groups route
+
+Route::get('/groups',[UserController::class,'loadGroups'])->middleware(['auth'])->name('groups');
+Route::post('/create-group', [UserController::class, 'createGroup'])->middleware(['auth'])->name('create.group');

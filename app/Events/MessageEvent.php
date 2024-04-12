@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class MessageEvent implements ShouldBroadcast
 {
@@ -20,6 +21,7 @@ class MessageEvent implements ShouldBroadcast
     public function __construct($chatData)
     {
         $this->chatData = $chatData;
+                // Log::info('UserStatusEvent created with  ' . $chatData);
     }
 
     /**

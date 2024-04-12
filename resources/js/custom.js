@@ -4,6 +4,65 @@ $.ajaxSetup({
     }
 });
 
+// $(document).ready(function(){
+    $(document).ready(function() {
+        $('#searchForm').submit(function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Get the search term from the input field
+            const searchTerm = $('#searchInput').val();
+
+            // Send AJAX request to the server
+            $.ajax({
+                url: '/search',
+                type: 'GET',
+                data: { search: searchTerm },
+                dataType: 'json',
+                success: function(data) {
+                    // Update UI with search results
+                    $('#searchResults').empty();
+                    $.each(data, function(index, user) {
+                        const userElement = $('<div>').text(user.name);
+                        $('#searchResults').append(userElement);
+                        console.log("userElement");
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+
+    // $(document).ready(function() {
+    //     // Event listener for user list item click
+    //     $('.user-list').click(function() {
+    //         // Hide all other user list items
+    //         $('.user-list').not(this).hide();
+
+    //         // Show only the clicked user list item
+    //         $(this).show();
+    //     });
+    // });
+
+    $(document).ready(function() {
+        $('#searchInput').on('input', function() {
+            // Get the search term from the input field
+            const searchTerm = $(this).val().toLowerCase();
+
+            // Hide all user list items
+            $('.user-list').hide();
+
+            // Show only the user list items that match the search term
+            $('.user-list').each(function() {
+                const userName = $(this).text().toLowerCase();
+                if (userName.includes(searchTerm)) {
+                    $(this).show();
+                }
+            });
+        });
+    });
+// });
 //message container
 $(document).ready(function(){
     $('.user-list').click(function(){
@@ -59,8 +118,6 @@ $(document).ready(function(){
     });
  });
 
-console.log('test');
-
 // loadOldChats
 
 function loadOldChats(){
@@ -90,6 +147,23 @@ function loadOldChats(){
                             </div>
                             `;
                  }
+                // let html = ``;
+                // for (let i = 0; i < chats.length; i++) {
+                //     let addClass = chats[i].sender_id == sender_id ? "current-user-chat" : "distance-user-chat";
+                //     let userImage = chats[i].sender_id == sender_id ? chats[i].sender.image : chats[i].receiver.image;
+                //     let userName = chats[i].sender_id == sender_id ? "You" : chats[i].receiver.name;
+
+                //     html += `
+                //         <div class="${addClass}">
+                //             <div class="message-info">
+                //                 <img src="${userImage}" alt="User Image" class="rounded-full user-image">
+                //                 <h4>${userName}</h4>
+                //                 <span class="message-timestamp">${chats[i].created_at}</span>
+                //             </div>
+                //             <h4>`+chats[i].message+`</h4>
+                //         </div>
+                //     `;
+                // }
                  $('#chat-container').append(html);
                  scrollChat();
 
@@ -175,4 +249,30 @@ window.Echo.channel('status-update')
         scrollChat();
 
         }
+    });
+
+
+
+    //chat groiup script
+    // prevent default not refresh page when click on submit button
+
+    $(document).ready(function(){
+     $('#createGroupForm').submit(function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url:"/create-group",
+            type:"POST",
+            data:new FormData(this),
+            contentType:false,
+            cache:false,
+            processData:false,
+            success:function(res){
+                alert(res.msg);
+                if(res.success){
+                    location.reload();
+                }
+            }
+        })
+     });
     });

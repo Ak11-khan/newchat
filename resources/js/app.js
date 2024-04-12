@@ -58,7 +58,7 @@ window.Pusher = require("pusher-js");
 
 window.Echo = new Echo({
     broadcaster: "pusher",
-    key: '198cf868ccaf0a3ae0d1',
+    key: '5f2c60dc61d0394bd18f',
     WsPort:6001,
     cluster: 'us2',
     // encrypted: false,

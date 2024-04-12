@@ -9,6 +9,67 @@ $.ajaxSetup({
   }
 });
 
+// $(document).ready(function(){
+$(document).ready(function () {
+  $('#searchForm').submit(function (event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    // Get the search term from the input field
+    var searchTerm = $('#searchInput').val();
+
+    // Send AJAX request to the server
+    $.ajax({
+      url: '/search',
+      type: 'GET',
+      data: {
+        search: searchTerm
+      },
+      dataType: 'json',
+      success: function success(data) {
+        // Update UI with search results
+        $('#searchResults').empty();
+        $.each(data, function (index, user) {
+          var userElement = $('<div>').text(user.name);
+          $('#searchResults').append(userElement);
+          console.log("userElement");
+        });
+      },
+      error: function error(xhr, status, _error) {
+        console.error('Error:', _error);
+      }
+    });
+  });
+});
+
+// $(document).ready(function() {
+//     // Event listener for user list item click
+//     $('.user-list').click(function() {
+//         // Hide all other user list items
+//         $('.user-list').not(this).hide();
+
+//         // Show only the clicked user list item
+//         $(this).show();
+//     });
+// });
+
+$(document).ready(function () {
+  $('#searchInput').on('input', function () {
+    // Get the search term from the input field
+    var searchTerm = $(this).val().toLowerCase();
+
+    // Hide all user list items
+    $('.user-list').hide();
+
+    // Show only the user list items that match the search term
+    $('.user-list').each(function () {
+      var userName = $(this).text().toLowerCase();
+      if (userName.includes(searchTerm)) {
+        $(this).show();
+      }
+    });
+  });
+});
+// });
 //message container
 $(document).ready(function () {
   $('.user-list').click(function () {
@@ -35,7 +96,7 @@ $(document).ready(function () {
         if (res.success) {
           $('#message').val('');
           var chat = res.data.message;
-          var html = "<div class=\"text-3xl current-user-chat\">\n                              <h4>" + chat + "</h4>\n                               </div>";
+          var html = "<div class=\" current-user-chat\">\n                              <h4>" + chat + "</h4>\n                               </div>";
           $('#chat-container').append(html);
           // console.log(chat);
           scrollChat();
@@ -46,7 +107,6 @@ $(document).ready(function () {
     });
   });
 });
-console.log('test');
 
 // loadOldChats
 
@@ -73,6 +133,23 @@ function loadOldChats() {
           }
           html += "<div class=\"" + addClass + "\">\n                           <h4>" + chats[i].message + "</h4>\n                            </div>\n                            ";
         }
+        // let html = ``;
+        // for (let i = 0; i < chats.length; i++) {
+        //     let addClass = chats[i].sender_id == sender_id ? "current-user-chat" : "distance-user-chat";
+        //     let userImage = chats[i].sender_id == sender_id ? chats[i].sender.image : chats[i].receiver.image;
+        //     let userName = chats[i].sender_id == sender_id ? "You" : chats[i].receiver.name;
+
+        //     html += `
+        //         <div class="${addClass}">
+        //             <div class="message-info">
+        //                 <img src="${userImage}" alt="User Image" class="rounded-full user-image">
+        //                 <h4>${userName}</h4>
+        //                 <span class="message-timestamp">${chats[i].created_at}</span>
+        //             </div>
+        //             <h4>`+chats[i].message+`</h4>
+        //         </div>
+        //     `;
+        // }
         $('#chat-container').append(html);
         scrollChat();
       } else {
@@ -127,7 +204,7 @@ window.Echo["private"]('broadcast-message')
 .listen('.getChatMessage', function (data) {
   console.log('Received:', data);
   if (sender_id == data.chat.receiver_id && receiver_id == data.chat.sender_id) {
-    var html = "\n        <div class=\"text-3xl distance-user-chat\">\n        <h4>" + data.chat.message + "</h4>\n        </div>\n        ";
+    var html = "\n        <div class=\" distance-user-chat\">\n        <h4>" + data.chat.message + "</h4>\n        </div>\n        ";
 
     //  html += `</h4>`;
 
@@ -137,6 +214,29 @@ window.Echo["private"]('broadcast-message')
     $('#chat-container').append(html);
     scrollChat();
   }
+});
+
+//chat groiup script
+// prevent default not refresh page when click on submit button
+
+$(document).ready(function () {
+  $('#createGroupForm').submit(function (e) {
+    e.preventDefault();
+    $.ajax({
+      url: "/create-group",
+      type: "POST",
+      data: new FormData(this),
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: function success(res) {
+        alert(res.msg);
+        if (res.success) {
+          location.reload();
+        }
+      }
+    });
+  });
 });
 /******/ })()
 ;
