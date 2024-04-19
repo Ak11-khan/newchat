@@ -15,7 +15,5 @@ class Group extends Model
       'image',
       'join_limit'
 
-
-
     ];
 }

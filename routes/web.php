@@ -47,4 +47,18 @@ Route::post('/create-group', [UserController::class, 'createGroup'])->middleware
 
 // message route
 
-Route::get('/message',[EmployeeController::class,'loadMessages'])->middleware(['auth'])->name('message');
+// Route::get('/message',[EmployeeController::class,'loadEmployee'])->middleware(['auth'])->name('message');
+// Route::get('/update-employee',[EmployeeController::class,'createEmployee'])->middleware(['auth'])->name('createEmployee');
+
+Route::get('/employees', [EmployeeController::class, 'indexEmployees'])->middleware(['auth'])->name('employees.index');
+// Route::post('/employees-store', [EmployeeController::class, 'storeEmployee'])->middleware(['auth'])->name('employees.store');
+Route::post('/employees-store', [EmployeeController::class, 'storeEmployee'])->name('employees.store');
+
+// Route::delete('/employees/{id}', [EmployeeController::class, 'destroyEmployee'])->name('employees.destroy');
+// Route::get('/employees/create', [EmployeeController::class, 'createEmployee'])->name('employees.create');
+
+// Routes for department management
+// Route::get('/departments', [EmployeeController::class, 'indexDepartments'])->name('departments.index');
+
+//Route to handle sending messages to multiple users
+Route::post('/send-messages', [UserController::class,'sendMessages'])->middleware(['auth'])->name('send.messages');

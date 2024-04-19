@@ -22,32 +22,73 @@ class UserController extends Controller
    }
    public function searchUsers(Request $request)
    {
-    $searchTerm = $request->input('search');
-    $users = User::where('name', 'LIKE', "%$searchTerm%")->get();
+    // $searchTerm = $request->input('search');
+    // $users = User::where('name', 'LIKE', "%$searchTerm%")->get();
+    // return response()->json($users);
+    $department = $request->input('department');
+
+    // Query users based on department
+    $users = User::whereHas('employee', function ($query) use ($department) {
+        $query->where('department', $department);
+    })->get();
+
     return response()->json($users);
    }
 
 
 
-   public function saveChat(Request $request)
-   {
+//    public function saveChat(Request $request)
+//    {
+//     try {
+//      $chat= Chat::create([
+//         'sender_id'=> $request->sender_id,
+//         'receiver_id' =>$request->receiver_id,
+//         'message' =>$request->message
+
+//      ]);
+
+//        event(new MessageEvent($chat));
+
+//         return response()->json(['success' => true, 'data' => $chat ]);
+
+//     } catch(\Exception $e){
+
+//         return response()->json(['success' => false, 'msg' => $e->getMessage() ]);
+//     }
+//     }
+
+//today save-chat
+
+public function saveChat(Request $request)
+{
     try {
-     $chat= Chat::create([
-        'sender_id'=> $request->sender_id,
-        'receiver_id' =>$request->receiver_id,
-        'message' =>$request->message
+        // Get the sender ID from the request
+        $senderId = $request->sender_id;
 
-     ]);
+        // Get the array of receiver IDs from the request
+        $receiverIds = $request->receiver_ids;
 
-       event(new MessageEvent($chat));
+        // Get the message from the request
+        $message = $request->message;
 
-        return response()->json(['success' => true, 'data' => $chat ]);
+        // Loop through each receiver ID and save a chat for each one
+        foreach ($receiverIds as $receiverId) {
+            $chat = Chat::create([
+                'sender_id' => $senderId,
+                'receiver_id' => $receiverId,
+                'message' => $message
+            ]);
 
-    } catch(\Exception $e){
+            // Fire the event for each chat created
+            event(new MessageEvent($chat));
+        }
 
-        return response()->json(['success' => false, 'msg' => $e->getMessage() ]);
+        return response()->json(['success' => true, 'msg' => 'Message sent successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'msg' => $e->getMessage()]);
     }
-    }
+}
+//end today save-chat
 
 
     public function loadChats(Request $request){
@@ -91,7 +132,7 @@ class UserController extends Controller
                 $imageName = 'images/'.$imageName;
             }
                  Group::insert([
-                'creator_id' => auth()->user()->id,
+                'creator_id' => auth()->user()->id,//retrieve id from auth
                 'name' => $request->name,
                 'image' => $imageName,
                 'join_limit' => $request->limit
@@ -105,4 +146,22 @@ class UserController extends Controller
                 return response()->json(['success' => false, 'msg' => $e->getMessage() ]);
             }
     }
+
+//today
+    // Modify the server-side endpoint to handle sending messages to multiple users
+public function sendMessage(Request $request)
+{
+    $message = $request->input('message');
+    $selectedUserIds = $request->input('selectedUserIds');
+
+    // Broadcast the message to each selected user
+    foreach ($selectedUserIds as $userId) {
+        // Implement your logic to send the message to each user
+        // For example, you might use Laravel Echo to broadcast the message to each user's chat window
+        broadcast(new MessageEvent($message))->toOthers();
+    }
+
+    return response()->json(['msg' => 'Message sent successfully']);
+}
+
 }

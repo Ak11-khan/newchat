@@ -2,51 +2,61 @@
 
 namespace App\Http\Controllers;
 use App\Events\UserStatusEvent;
-
 use App\Models\Chat;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Employee;
 use App\Events\MessageEvent;
 use Illuminate\Support\Facades\Auth;
 use Psy\Command\WhereamiCommand;
+
 class EmployeeController extends Controller
 {
+   public function indexEmployees()
+    {
+        $departments = Department::all(); // Retrieve all departments
+        $employees = Employee::where('user_id',auth()->user()->id)->get();
+        return view('employees.index', compact('employees','departments'));
+    }
 
-//     public function loadMessages(Request $request)
-//     {
-//         $users= User::whereNotIn('id',[auth()->user()->id])->get();
-//  // Retrieve the authenticated user
-//  $user = Auth::user();
-// //  print_r($user);
-//  $userId = $user->id;
+    // public function createEmployee()
+    // {
+    //     return view('employees.create');
+    // }
 
-//  // Find the employee record for the user
-//  $messages = Employee::where('employee_id', $userId)->get();
+    public function storeEmployee(Request $request)
+    {
+        try {
+            $request->validate([
+                'department_id' => 'required'
+            ]);
 
-//  // If employee record not found, you may want to handle it accordingly
-// //  if (!$employee) {
-// //      // Handle the case where employee record doesn't exist
-// //      // For example, you might want to return an error message or redirect to a different page
-// //      return redirect()->back()->with('error', 'Employee record not found.');
-// //  }
+            Employee::create([
+                'user_id' => auth()->user()->id,
+                'department_id' => $request->department_id
+            ]);
 
-// //  // Fetch messages where the current user is either the sender or receiver
+            return response()->json(['success' => true, 'msg' => 'Department assigned successfully']);
+        } catch (\Exception $e) {
+            // Log the exception for debugging purposes
+            //    Log::info('user_id');
+
+            // Return a generic error message to the user
+            return response()->json(['success' => false, 'msg' => 'Failed to assign department. Please try again later.']);
+        }
+    }
 
 
-//  // Pass data to the view
-//  return view('dashboard', compact('messages','users'));
-// }
 
-public function loadMessages(){
 
-    // Log::info('Event sent: UserStatusEvent');
-    // event(new UserStatusEvent('151'));
-    $users= User::whereNotIn('id',[auth()->user()->id])->get();
-    return view('dashboard', compact('users'));
-   }
+    // public function indexDepartments()
+    // {
+    //     $departments = Department::all();
+    //     return view('department.index', compact('departments'));
+    // }
+
 
 }

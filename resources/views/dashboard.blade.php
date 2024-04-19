@@ -8,7 +8,7 @@
                 <div class="col-md-3">
                     <ul class="list-group">
                         <form id="searchForm">
-                            <input type="text" id="searchInput" placeholder="Search users...">
+                            <input type="text" id="searchInput" class="w-full" placeholder="Search users...">
                             {{-- <button type="submit">Search</button> --}}
                         </form>
 
@@ -25,9 +25,18 @@
 
                             <li class="cursor-pointer list-group-item list-group-item-dark user-list"
                                 data-id="{{ $user->id }}">
+                                {{-- today --}}
+                                <input type="checkbox" class="user-checkbox" value="{{ $user->id }}">
+                                {{-- today --}}
                                 <img src="{{ $image }}" alt="image-profile" class="rounded-full user-image">
                                 {{ $user->name }}
-                                <sup id="{{ $user->id }}-status" class="offline-status">Offline</sup>
+                                <sup id="{{ $user->id }}-status" class="offline-status">●</sup>
+                                <!-- Access latest department name -->
+                                {{-- <p>{{ $user->department->name }}</p> --}}
+                                {{-- same way of writing  --}}
+                                {{-- <p>{{ optional($user->employee)->department->name }}</p> --}}
+                                <p>{{ optional($user->latestDepartment())->name }}</p>
+
                             </li>
                         @endforeach
                     </ul>

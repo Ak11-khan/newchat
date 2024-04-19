@@ -45,9 +45,26 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function employee():HasOne
+    public function employee()
     {
-        return $this->hasOne(Employee::class,'employee_id');
+        return $this->hasOne(Employee::class);
     }
 
+    // public function department()
+    // {
+    //     return $this->employee->belongsTo(Department::class);
+    // }
+    public function latestDepartment()
+    {
+        // Assuming 'user_id' is the foreign key in the 'employees' table
+        $latestEmployee = Employee::where('user_id', $this->id)->latest()->first();
+        return $latestEmployee ? $latestEmployee->department : null;
+        //if ($latestEmployee) {
+        // If $latestEmployee exists (i.e., not null)
+        //return $latestEmployee->department;
+        //} else {
+        // If $latestEmployee is null
+        //return null;
+        //}
+    }
 }

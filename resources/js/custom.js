@@ -5,6 +5,37 @@ $.ajaxSetup({
 });
 
 // $(document).ready(function(){
+    // $(document).ready(function() {
+    //     $('#searchForm').submit(function(event) {
+    //         event.preventDefault(); // Prevent the form from submitting normally
+
+    //         // Get the search term from the input field
+    //         const searchTerm = $('#searchInput').val();
+
+    //         // Send AJAX request to the server
+    //         $.ajax({
+    //             url: '/search',
+    //             type: 'GET',
+    //             data: { search: searchTerm },
+    //             dataType: 'json',
+    //             success: function(data) {
+    //                 // Update UI with search results
+    //                 $('#searchResults').empty();
+    //                 $.each(data, function(index, user) {
+    //                     const userElement = $('<div>').text(user.name);
+    //                     $('#searchResults').append(userElement);
+    //                     console.log("userElement");
+    //                 });
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error('Error:', error);
+    //             }
+    //         });
+    //     });
+    // });
+
+
+    //today
     $(document).ready(function() {
         $('#searchForm').submit(function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
@@ -12,11 +43,14 @@ $.ajaxSetup({
             // Get the search term from the input field
             const searchTerm = $('#searchInput').val();
 
+            // Get the department selection
+            const department = $('#departmentSelect').val();
+
             // Send AJAX request to the server
             $.ajax({
                 url: '/search',
                 type: 'GET',
-                data: { search: searchTerm },
+                data: { search: searchTerm, department: department },
                 dataType: 'json',
                 success: function(data) {
                     // Update UI with search results
@@ -24,7 +58,6 @@ $.ajaxSetup({
                     $.each(data, function(index, user) {
                         const userElement = $('<div>').text(user.name);
                         $('#searchResults').append(userElement);
-                        console.log("userElement");
                     });
                 },
                 error: function(xhr, status, error) {
@@ -34,16 +67,55 @@ $.ajaxSetup({
         });
     });
 
-    // $(document).ready(function() {
-    //     // Event listener for user list item click
-    //     $('.user-list').click(function() {
-    //         // Hide all other user list items
-    //         $('.user-list').not(this).hide();
+    // message based on search
+    $('#sendMessageForm').submit(function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
 
-    //         // Show only the clicked user list item
-    //         $(this).show();
-    //     });
-    // });
+        // Get the message text from the input field
+        const message = $('#messageInput').val();
+
+        // Get the IDs of the selected users
+        const selectedUserIds = [];
+        $('.user-checkbox:checked').each(function() {
+            selectedUserIds.push($(this).val());
+        });
+
+        // Send AJAX request to the server
+        $.ajax({
+            url: '/send-message',
+            type: 'POST',
+            data: { message: message, selectedUserIds: selectedUserIds },
+            dataType: 'json',
+            success: function(response) {
+                alert(response.msg);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+//for specific user send message
+    // Define an array to store selected user IDs
+var selectedUserIds = [];
+
+// Event listener for when a user is clicked
+$('.user-list').click(function() {
+    var userId = $(this).data('id');
+
+    // Toggle selection
+    if (selectedUserIds.includes(userId)) {
+        // Deselect user
+        selectedUserIds = selectedUserIds.filter(id => id !== userId);
+    } else {
+        // Select user
+        selectedUserIds.push(userId);
+    }
+
+    console.log(selectedUserIds); // For debugging - remove in production
+});
+
+      //end today
 
     $(document).ready(function() {
         $('#searchInput').on('input', function() {
@@ -81,42 +153,93 @@ $(document).ready(function(){
 
     });
 
-    $('#chat-form').submit(function(e){
-      e.preventDefault();
+//     $('#chat-form').submit(function(e){
+//       e.preventDefault();
 
-      var message = $('#message').val();
+//       var message = $('#message').val();
 
-       $.ajax({
-         url:"/save-chat",
-         type:"POST",
-         data:{
-             sender_id:sender_id,
-             receiver_id:receiver_id,
-             message:message
-         },
-             success:function(res){
-                if(res.success){
-                   $('#message').val('');
+//        $.ajax({
+//          url:"/save-chat",
+//          type:"POST",
+//          data:{
+//              sender_id:sender_id,
+//              receiver_id:receiver_id,
+//              message:message
+//          },
+//              success:function(res){
+//                 if(res.success){
+//                    $('#message').val('');
 
-                   let chat = res.data.message;
+//                    let chat = res.data.message;
 
-                   let html =
-                   `<div class=" current-user-chat">
-                              <h4>`+chat+`</h4>
-                               </div>`;
+//                    let html =
+//                    `<div class=" current-user-chat">
+//                               <h4>`+chat+`</h4>
+//                                </div>`;
+
+//                     $('#chat-container').append(html);
+//                     // console.log(chat);
+//                     scrollChat();
+
+//                 }else{
+//                   alert(res.msg);
+//                 }
+
+//              }
+//       });
+//     });
+//  });
+
+//todays chat-form for /save-chat route
+
+
+    $('#chat-form').submit(function(e) {
+        e.preventDefault(); // Prevent the form from submitting normally
+
+        // Get the selected receiver IDs
+        var receiverIds = [];
+        $('.user-checkbox:checked').each(function() {
+            receiverIds.push($(this).val());
+        });
+
+        // Get the message
+        var message = $('#message').val();
+
+        // Send AJAX request to save the chat
+        $.ajax({
+            url: "/save-chat",
+            type: "POST",
+            data: {
+                sender_id: sender_id,
+                receiver_ids: receiverIds, // Pass the array of receiver IDs
+                message: message
+            },
+            success: function(res) {
+                console.log(res); // Log the entire response object
+                if (res.success) {
+                    $('#message').val('');
+
+                    let chat = res.data.message;
+
+                    let html =
+                        `<div class="current-user-chat">
+                            <h4>${chat}</h4>
+                        </div>`;
 
                     $('#chat-container').append(html);
-                    // console.log(chat);
                     scrollChat();
-
-                }else{
-                  alert(res.msg);
+                } else {
+                    alert(res.msg);
+                    console.log(res);
                 }
-
-             }
-      });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     });
- });
+});
+// end todays chat-form for /save-chat route
 
 // loadOldChats
 
@@ -191,7 +314,7 @@ Echo.join('status-update')
 
         $('#'+users[x]['id']+'-status').removeClass('offline-status');
         $('#'+users[x]['id']+'-status').addClass('online-status');
-        $('#'+users[x]['id']+'-status').text('online');
+        $('#'+users[x]['id']+'-status').text('●');
           }
     }
     console.log(users);
@@ -202,14 +325,14 @@ Echo.join('status-update')
 
         $('#'+user.id+'-status').removeClass('offline-status');
         $('#'+user.id+'-status').addClass('online-status');
-        $('#'+user.id+'-status').text('online');
+        $('#'+user.id+'-status').text('●');
         console.log('join', user.name);
 })
 .leaving((user) => {
 
         $('#'+user.id+'-status').addClass('offline-status');
         $('#'+user.id+'-status').removeClass('online-status');
-        $('#'+user.id+'-status').text('Offline');
+        $('#'+user.id+'-status').text('●');
         console.log('left', user.id);
 
 })
@@ -253,7 +376,7 @@ window.Echo.channel('status-update')
 
 
 
-    //chat groiup script
+    //chat group script
     // prevent default not refresh page when click on submit button
 
     $(document).ready(function(){
@@ -276,3 +399,29 @@ window.Echo.channel('status-update')
         })
      });
     });
+
+
+
+    $(document).ready(function(){
+        $('#createEmployeeForm').submit(function(e){
+            e.preventDefault();
+
+            $.ajax({
+                url: "/employees-store",
+                type: "POST",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(res){
+                    console.log(res); // Log the response object to the console
+                    alert(res.msg);
+                    if(res.success){
+                        location.reload();
+                    }
+                }
+            });
+        });
+    });
+
+
